@@ -12,7 +12,7 @@ from typing import Dict
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
-from mock_simulation import MockSimulation, EXPERIMENTS, NUM_NEURONS
+from mock_simulation import MockSimulation, EXPERIMENTS, NUM_NEURONS, SENSORY_CHANNELS
 
 active_connections: Dict[str, WebSocket] = {}
 simulation = MockSimulation()
@@ -62,6 +62,15 @@ async def get_status():
     }
 
 
+@app.get("/api/sensory_channels")
+async def get_sensory_channels():
+    """Return available sensory channels and their current state."""
+    return {
+        "channels": SENSORY_CHANNELS,
+        "state": simulation.get_sensory_summary(),
+    }
+
+
 @app.websocket("/ws/simulation")
 async def simulation_ws(websocket: WebSocket):
     await websocket.accept()
@@ -101,10 +110,20 @@ async def simulation_ws(websocket: WebSocket):
             elif cmd == "set_stimulus":
                 channel = msg.get("channel", "")
                 active = msg.get("active", False)
+                intensity = msg.get("intensity", 1.0)
+                success = simulation.set_stimulus(channel, active, intensity)
                 await websocket.send_json({
                     "type": "stimulus_ack",
                     "channel": channel,
                     "active": active,
+                    "intensity": intensity,
+                    "success": success,
+                })
+
+            elif cmd == "get_sensory":
+                await websocket.send_json({
+                    "type": "sensory_update",
+                    "channels": simulation.get_sensory_summary(),
                 })
 
     except WebSocketDisconnect:

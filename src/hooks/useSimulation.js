@@ -2,6 +2,8 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 
 const MAX_HISTORY = 200;
 const MAX_RASTER_SPIKES = 3000;
+const MAX_TRAJECTORY = 500;
+const MAX_GAIT_HISTORY = 200;
 
 export function useSimulation() {
   const [status, setStatus] = useState('disconnected');
@@ -12,9 +14,14 @@ export function useSimulation() {
   const [history, setHistory] = useState([]);
   const [rasterSpikes, setRasterSpikes] = useState([]);
   const [cumulativeSpikes, setCumulativeSpikes] = useState(0);
+  const [trajectoryHistory, setTrajectoryHistory] = useState([]);
+  const [gaitHistory, setGaitHistory] = useState([]);
+  const [sensoryState, setSensoryState] = useState({});
   const wsRef = useRef(null);
   const historyRef = useRef([]);
   const rasterRef = useRef([]);
+  const trajectoryRef = useRef([]);
+  const gaitRef = useRef([]);
 
   const getWsUrl = useCallback(() => {
     const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -60,6 +67,19 @@ export function useSimulation() {
         return;
       }
 
+      if (msg.type === 'stimulus_ack') {
+        setSensoryState(prev => ({
+          ...prev,
+          [msg.channel]: { active: msg.active, intensity: msg.intensity || 0 }
+        }));
+        return;
+      }
+
+      if (msg.type === 'sensory_update') {
+        setSensoryState(msg.channels || {});
+        return;
+      }
+
       if (msg.type === 'cycle') {
         setCurrentCycle(msg);
         setCumulativeSpikes(msg.cumulative_spikes);
@@ -86,6 +106,25 @@ export function useSimulation() {
           }));
           rasterRef.current = [...rasterRef.current, ...newSpikes].slice(-MAX_RASTER_SPIKES);
           setRasterSpikes(rasterRef.current);
+        }
+
+        // Track trajectory for embodied mode
+        if (msg.body_state?.position) {
+          const pos = msg.body_state.position;
+          trajectoryRef.current = [
+            ...trajectoryRef.current.slice(-(MAX_TRAJECTORY - 1)),
+            { x: pos.x, y: pos.y, time: msg.time_ms }
+          ];
+          setTrajectoryHistory(trajectoryRef.current);
+        }
+
+        // Track gait (contact forces) for embodied mode
+        if (msg.body_state?.contact_forces) {
+          gaitRef.current = [
+            ...gaitRef.current.slice(-(MAX_GAIT_HISTORY - 1)),
+            { forces: msg.body_state.contact_forces, time: msg.time_ms }
+          ];
+          setGaitHistory(gaitRef.current);
         }
       }
     };
@@ -114,10 +153,15 @@ export function useSimulation() {
   const start = useCallback((speed = 1.0) => {
     historyRef.current = [];
     rasterRef.current = [];
+    trajectoryRef.current = [];
+    gaitRef.current = [];
     setHistory([]);
     setRasterSpikes([]);
     setCumulativeSpikes(0);
     setCurrentCycle(null);
+    setTrajectoryHistory([]);
+    setGaitHistory([]);
+    setSensoryState({});
     sendCommand('start', { experiment, speed });
   }, [sendCommand, experiment]);
 
@@ -126,6 +170,10 @@ export function useSimulation() {
   const stop = useCallback(() => {
     sendCommand('stop');
     setStatus('connected');
+  }, [sendCommand]);
+
+  const setStimulus = useCallback((channel, active, intensity = 1.0) => {
+    sendCommand('set_stimulus', { channel, active, intensity });
   }, [sendCommand]);
 
   useEffect(() => {
@@ -145,10 +193,14 @@ export function useSimulation() {
     history,
     rasterSpikes,
     cumulativeSpikes,
+    trajectoryHistory,
+    gaitHistory,
+    sensoryState,
     start,
     pause,
     resume,
     stop,
     connect,
+    setStimulus,
   };
 }
