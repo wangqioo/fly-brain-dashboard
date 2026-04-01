@@ -1,0 +1,581 @@
+/* === Dashboard Layout === */
+.dashboard {
+  min-height: 100vh;
+  background: #090b10;
+  color: #e2e8f0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: #0f1117;
+  border-bottom: 1px solid #1e2030;
+}
+
+.header-left {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.header-subtitle {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.header-right {
+  display: flex;
+  gap: 8px;
+}
+
+.header-badge {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: #1e293b;
+  color: #94a3b8;
+  border: 1px solid #334155;
+}
+
+/* === Grid Layout === */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr 280px;
+  grid-template-rows: 1fr;
+  gap: 1px;
+  height: calc(100vh - 52px);
+  background: #1e2030;
+}
+
+.grid-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow-y: auto;
+}
+
+.grid-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.grid-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow-y: auto;
+}
+
+/* === Panel Base === */
+.panel {
+  background: #0f1117;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 8px 0;
+}
+
+.panel-empty {
+  color: #475569;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.sub-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin: 12px 0 6px 0;
+}
+
+/* === Controls Panel === */
+.controls-panel {
+  flex-shrink: 0;
+}
+
+.control-row {
+  margin-bottom: 10px;
+}
+
+.control-label {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.control-select {
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 13px;
+  background: #1a1d2e;
+  color: #e2e8f0;
+  border: 1px solid #2d3348;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+
+.control-select:focus {
+  border-color: #3b82f6;
+}
+
+.control-select:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.experiment-info {
+  margin-bottom: 10px;
+  padding: 8px;
+  background: #1a1d2e;
+  border-radius: 4px;
+  border: 1px solid #2d3348;
+}
+
+.experiment-info p {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0 0 6px 0;
+  line-height: 1.4;
+}
+
+.experiment-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: #22d3ee15;
+  color: #22d3ee;
+  border: 1px solid #22d3ee30;
+}
+
+.control-buttons {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.btn {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-start {
+  background: #059669;
+  color: white;
+}
+.btn-start:hover {
+  background: #047857;
+}
+
+.btn-pause {
+  background: #d97706;
+  color: white;
+}
+.btn-pause:hover {
+  background: #b45309;
+}
+
+.btn-stop {
+  background: #dc2626;
+  color: white;
+}
+.btn-stop:hover {
+  background: #b91c1c;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #475569;
+}
+
+.status-dot.active {
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e80;
+  animation: pulse 1.5s infinite;
+}
+
+.status-dot.paused {
+  background: #f59e0b;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.status-text {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.status-badge.disconnected {
+  font-size: 12px;
+  color: #ef4444;
+  padding: 6px 12px;
+  background: #ef444415;
+  border: 1px solid #ef444430;
+  border-radius: 4px;
+}
+
+/* === Raster Panel === */
+.raster-panel {
+  flex: 1;
+  min-height: 0;
+}
+
+/* === Spike Time Series Panel === */
+.spike-ts-panel {
+  flex: 1;
+  min-height: 0;
+}
+
+/* === CPG Panel === */
+.cpg-panel {
+  flex: 1;
+  min-height: 180px;
+}
+
+/* === Metrics Panel === */
+.metrics-panel {
+  flex: 1;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.metric-card {
+  padding: 8px;
+  background: #1a1d2e;
+  border-radius: 4px;
+  border: 1px solid #2d3348;
+}
+
+.metric-label {
+  font-size: 10px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.metric-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f1f5f9;
+  font-variant-numeric: tabular-nums;
+  margin: 2px 0;
+}
+
+.metric-sub {
+  font-size: 10px;
+  color: #475569;
+  font-variant-numeric: tabular-nums;
+}
+
+/* === Gauges === */
+.cpg-gauges {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.gauge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gauge-label {
+  font-size: 10px;
+  color: #64748b;
+  width: 80px;
+  flex-shrink: 0;
+}
+
+.gauge-bar-bg {
+  flex: 1;
+  height: 6px;
+  background: #1a1d2e;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.gauge-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.15s;
+}
+
+.gauge-bar-fill.freq {
+  background: #a78bfa;
+}
+
+.gauge-bar-fill.turn {
+  background: #f59e0b;
+  position: absolute;
+  top: 0;
+}
+
+.gauge-value {
+  font-size: 11px;
+  color: #94a3b8;
+  width: 50px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* === Sensory Channels === */
+.sensory-channels {
+  margin-top: 8px;
+}
+
+.sensory-label {
+  font-size: 10px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 4px;
+}
+
+.sensory-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.sensory-tag {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: #10b98115;
+  color: #10b981;
+  border: 1px solid #10b98130;
+}
+
+/* === Firing Rate Panel === */
+.firing-panel {
+  flex-shrink: 0;
+}
+
+.firing-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.firing-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 18px;
+}
+
+.firing-label {
+  font-size: 10px;
+  color: #64748b;
+  width: 36px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.firing-bar-bg {
+  flex: 1;
+  height: 10px;
+  background: #1a1d2e;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.firing-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0ea5e9, #22d3ee);
+  border-radius: 2px;
+  transition: width 0.15s;
+}
+
+.firing-value {
+  font-size: 10px;
+  color: #94a3b8;
+  width: 36px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* === Rate Histogram === */
+.rate-histogram {
+  margin-top: 8px;
+}
+
+.histogram-bars {
+  display: flex;
+  gap: 2px;
+  align-items: flex-end;
+  height: 60px;
+}
+
+.hist-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hist-bar-container {
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.hist-bar {
+  width: 100%;
+  background: linear-gradient(180deg, #6366f1, #4338ca);
+  border-radius: 2px 2px 0 0;
+  min-height: 1px;
+  transition: height 0.15s;
+}
+
+.hist-label {
+  font-size: 8px;
+  color: #475569;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+/* === Body State Panel === */
+.body-panel {
+  flex-shrink: 0;
+}
+
+.body-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.body-metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 6px;
+  background: #1a1d2e;
+  border-radius: 3px;
+}
+
+.body-metric-label {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.body-metric-value {
+  font-size: 12px;
+  color: #e2e8f0;
+  font-variant-numeric: tabular-nums;
+}
+
+.leg-forces {
+  margin-top: 4px;
+}
+
+.leg-label {
+  font-size: 10px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 4px;
+}
+
+.leg-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.leg-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.leg-name {
+  font-size: 9px;
+  color: #475569;
+  width: 65px;
+  text-transform: capitalize;
+}
+
+.leg-bar-bg {
+  flex: 1;
+  height: 6px;
+  background: #1a1d2e;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.leg-bar-fill {
+  height: 100%;
+  background: #f97316;
+  border-radius: 3px;
+  transition: width 0.15s;
+}
+
+.leg-value {
+  font-size: 9px;
+  color: #64748b;
+  width: 32px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
