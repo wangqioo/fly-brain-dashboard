@@ -317,6 +317,27 @@ class MockSimulation:
             tripod_a_stance = math.sin(phase) > 0  # True when tripod A is in stance
             noise_f = lambda: random.gauss(0, 0.02)
 
+            # Generate per-leg joint angles (7 DOF each, 42 total)
+            # Joints: ThC_yaw, ThC_pitch, ThC_roll, CTr_pitch, CTr_roll, FTi_pitch, TiTa_pitch
+            joint_angles = {}
+            leg_names = ["LF", "RF", "LM", "RM", "LH", "RH"]
+            for li, ln in enumerate(leg_names):
+                is_tripod_a = ln in ("LF", "RM", "LH")
+                lp = phase if is_tripod_a else phase + math.pi
+                sw = math.sin(lp)
+                st = sw > 0  # stance
+                side = 1 if ln.startswith("L") else -1
+
+                joint_angles[ln] = {
+                    "ThC_yaw":   round(side * 0.2 * sw, 4),
+                    "ThC_pitch": round(-0.3 + (0.15 if st else -0.25 * abs(sw)), 4),
+                    "ThC_roll":  round(side * 0.1 * sw, 4),
+                    "CTr_pitch": round(-0.6 + (0.1 if st else -0.2 * abs(sw)), 4),
+                    "CTr_roll":  round(random.gauss(0, 0.02), 4),
+                    "FTi_pitch": round(0.8 + (-0.1 if st else 0.3 * abs(sw)), 4),
+                    "TiTa_pitch": round(0.3 + (0.2 if st else 0), 4),
+                }
+
             body_state = {
                 "position": {
                     "x": round(self._body_x, 4),
@@ -326,6 +347,7 @@ class MockSimulation:
                 "velocity": round(self._body_speed, 3),
                 "orientation": round(self._body_heading % 360, 1),
                 "gait_phase": round(phase % (2 * math.pi), 4),
+                "joint_angles": joint_angles,
                 "contact_forces": {
                     "left_front":  round(max(0, (0.35 if tripod_a_stance else 0.02) + noise_f()), 3),
                     "right_front": round(max(0, (0.02 if tripod_a_stance else 0.35) + noise_f()), 3),

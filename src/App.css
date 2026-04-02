@@ -802,7 +802,7 @@
   display: block;
 }
 
-/* === Fly Arena View === */
+/* === Fly Arena View (2D) === */
 .fly-arena-panel {
   flex: 2;
   min-height: 280px;
@@ -819,6 +819,120 @@
 
 .fly-arena-canvas-wrap canvas {
   display: block;
+}
+
+/* === Fly 3D View === */
+.fly-3d-panel {
+  flex: 2;
+  min-height: 350px;
+  display: flex;
+  flex-direction: column;
+}
+
+.fly-3d-container {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #080a0f;
+}
+
+.fly-3d-container canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.fly-3d-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 8px;
+  background: #0d0f16;
+  border-top: 1px solid #1e2030;
+  flex-wrap: wrap;
+}
+
+.fly-3d-mode-select {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.fly-3d-mode-select label {
+  font-size: 10px;
+  color: #64748b;
+  margin-right: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mode-btn {
+  font-size: 10px;
+  padding: 3px 8px;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  background: #1e293b;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.mode-btn:hover {
+  border-color: #22d3ee;
+  color: #e2e8f0;
+}
+
+.mode-btn.active {
+  background: #164e63;
+  border-color: #22d3ee;
+  color: #22d3ee;
+}
+
+.fly-3d-joystick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.joystick-hint {
+  font-size: 8px;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.fly-3d-camera-controls {
+  margin-left: auto;
+}
+
+.fly-3d-info {
+  display: flex;
+  gap: 8px;
+  font-size: 9px;
+  color: #64748b;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.panel-title-badges {
+  margin-left: 8px;
+}
+
+.badge-small {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: #1e293b;
+  color: #64748b;
+  margin-left: 4px;
+  font-weight: 400;
+}
+
+.badge-green {
+  background: #064e3b;
+  color: #34d399;
 }
 
 /* Embodied layout adjustments */

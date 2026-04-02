@@ -8,8 +8,7 @@ import SpikeTimeSeriesPanel from './SpikeTimeSeriesPanel';
 import BodyStatePanel from './BodyStatePanel';
 import TrajectoryPanel from './TrajectoryPanel';
 import GaitDiagramPanel from './GaitDiagramPanel';
-import FlyArenaView from './FlyArenaView';
-import MotorControlPanel from './MotorControlPanel';
+import Fly3DView from './Fly3DView';
 import { useSimulation } from '../hooks/useSimulation';
 
 export default function Dashboard() {
@@ -48,10 +47,6 @@ export default function Dashboard() {
             onStimulusChange={sim.setStimulus}
             status={sim.status}
           />
-          <MotorControlPanel
-            onMotorControl={sim.setMotorOverride}
-            status={sim.status}
-          />
           <MetricsPanel
             currentCycle={sim.currentCycle}
             cumulativeSpikes={sim.cumulativeSpikes}
@@ -61,11 +56,13 @@ export default function Dashboard() {
 
         <div className="grid-main">
           {isEmbodied && (
-            <FlyArenaView
+            <Fly3DView
               bodyState={sim.currentCycle?.body_state}
               trajectoryHistory={sim.trajectoryHistory}
               currentCycle={sim.currentCycle}
               activeSensory={sim.currentCycle?.active_sensory}
+              onMotorControl={sim.setMotorOverride}
+              status={sim.status}
             />
           )}
           <RasterPlot
