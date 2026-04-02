@@ -831,3 +831,204 @@
 .embodied-layout .raster-panel {
   flex: 1;
 }
+
+/* === Motor Control Panel === */
+.motor-control-panel {
+  border-top: 1px solid #1e2030;
+}
+
+.motor-mode-selector {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.motor-mode-btn {
+  flex: 1;
+  padding: 5px 0;
+  border: 1px solid #2a2d3e;
+  border-radius: 4px;
+  background: #12141d;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.motor-mode-btn:hover {
+  border-color: #3b3f54;
+  color: #94a3b8;
+}
+
+.motor-mode-btn.active {
+  background: #1a2332;
+  border-color: #22d3ee;
+  color: #22d3ee;
+}
+
+.motor-mode-desc {
+  font-size: 10px;
+  color: #475569;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.joystick-container {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.joystick-base {
+  position: relative;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #141722, #0c0e16);
+  border: 2px solid #1e2030;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.joystick-base.active {
+  border-color: #22d3ee40;
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.08);
+}
+
+.joystick-base.active:active {
+  cursor: grabbing;
+}
+
+.joystick-base.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.joystick-cross-h,
+.joystick-cross-v {
+  position: absolute;
+  background: #1e2030;
+}
+
+.joystick-cross-h {
+  width: 80%;
+  height: 1px;
+  top: 50%;
+  left: 10%;
+}
+
+.joystick-cross-v {
+  width: 1px;
+  height: 80%;
+  left: 50%;
+  top: 10%;
+}
+
+.joy-label {
+  position: absolute;
+  font-size: 9px;
+  color: #334155;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.joy-label-up { top: 6px; left: 50%; transform: translateX(-50%); }
+.joy-label-down { bottom: 6px; left: 50%; transform: translateX(-50%); }
+.joy-label-left { left: 8px; top: 50%; transform: translateY(-50%); }
+.joy-label-right { right: 8px; top: 50%; transform: translateY(-50%); }
+
+.joystick-knob {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #2a3a4e, #1a2535);
+  border: 2px solid #22d3ee60;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(34, 211, 238, 0.1);
+  transition: transform 0.05s ease-out;
+  pointer-events: none;
+}
+
+.motor-values {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.motor-value-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.motor-label {
+  font-size: 10px;
+  color: #64748b;
+  width: 36px;
+  text-align: right;
+}
+
+.motor-bar-track {
+  flex: 1;
+  height: 6px;
+  background: #12141d;
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.motor-bar-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.08s ease-out;
+}
+
+.motor-bar-fill.speed {
+  background: linear-gradient(90deg, #22d3ee, #06b6d4);
+}
+
+.turn-track {
+  overflow: visible;
+}
+
+.motor-bar-fill.turn {
+  background: linear-gradient(90deg, #f59e0b, #eab308);
+  border-radius: 3px;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: width 0.08s ease-out, transform 0.08s ease-out;
+}
+
+.turn-center-mark {
+  position: absolute;
+  left: 50%;
+  top: -1px;
+  width: 1px;
+  height: 8px;
+  background: #334155;
+}
+
+.motor-num {
+  font-size: 10px;
+  color: #94a3b8;
+  font-family: 'JetBrains Mono', monospace;
+  width: 36px;
+  text-align: right;
+}
+
+.motor-keys-hint {
+  text-align: center;
+  font-size: 9px;
+  color: #334155;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid #1a1d2e;
+}

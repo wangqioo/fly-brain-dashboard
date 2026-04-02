@@ -176,6 +176,10 @@ export function useSimulation() {
     sendCommand('set_stimulus', { channel, active, intensity });
   }, [sendCommand]);
 
+  const setMotorOverride = useCallback((mode, freq_modulation = 1.0, turn_bias = 0.0) => {
+    sendCommand('motor_override', { mode, freq_modulation, turn_bias });
+  }, [sendCommand]);
+
   useEffect(() => {
     fetchExperiments();
     fetchConfig();
@@ -202,5 +206,6 @@ export function useSimulation() {
     stop,
     connect,
     setStimulus,
+    setMotorOverride,
   };
 }

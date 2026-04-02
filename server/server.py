@@ -120,6 +120,18 @@ async def simulation_ws(websocket: WebSocket):
                     "success": success,
                 })
 
+            elif cmd == "motor_override":
+                mode = msg.get("mode", "brain")
+                freq = msg.get("freq_modulation", 1.0)
+                turn = msg.get("turn_bias", 0.0)
+                simulation.set_motor_override(mode, freq, turn)
+                await websocket.send_json({
+                    "type": "motor_ack",
+                    "mode": mode,
+                    "freq_modulation": freq,
+                    "turn_bias": turn,
+                })
+
             elif cmd == "get_sensory":
                 await websocket.send_json({
                     "type": "sensory_update",

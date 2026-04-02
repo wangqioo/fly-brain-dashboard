@@ -116,6 +116,11 @@ class MockSimulation:
         # Gait phase for tripod pattern
         self._gait_phase = 0.0
 
+        # Motor override (manual/hybrid control)
+        self._motor_mode = "brain"  # brain | manual | hybrid
+        self._manual_freq = 1.0
+        self._manual_turn = 0.0
+
     def configure(self, experiment_name: str):
         exp = EXPERIMENTS.get(experiment_name)
         if not exp:
@@ -161,6 +166,12 @@ class MockSimulation:
     def stop(self):
         self.running = False
         self.paused = False
+
+    def set_motor_override(self, mode: str, freq: float = 1.0, turn: float = 0.0):
+        """Set motor control mode and manual override values."""
+        self._motor_mode = mode  # brain, manual, hybrid
+        self._manual_freq = max(0.0, min(2.0, freq))
+        self._manual_turn = max(-1.0, min(1.0, turn))
 
     def set_stimulus(self, channel: str, active: bool, intensity: float = 1.0):
         """Set a sensory channel's state (called from WebSocket command)."""
@@ -210,26 +221,41 @@ class MockSimulation:
         stimulus_extra = self._compute_stimulus_contribution()
         brain_spikes = max(0, int((base + stimulus_extra) * ramp * (1.0 + noise + oscillation)))
 
-        # CPG parameters influenced by sensory state
+        # CPG parameters influenced by sensory state and motor override
         if self._brain_only:
-            freq_mod = 1.0
-            turn_bias = 0.0
+            brain_freq = 1.0
+            brain_turn = 0.0
         else:
-            # Base CPG dynamics
-            freq_mod = 1.0 + 0.3 * ramp * math.sin(2 * math.pi * 0.2 * t) + random.gauss(0, 0.02)
+            # Base CPG dynamics from brain
+            brain_freq = 1.0 + 0.3 * ramp * math.sin(2 * math.pi * 0.2 * t) + random.gauss(0, 0.02)
 
             # Sensory modulation of CPG
             if self._sensory_active.get("sugar"):
-                freq_mod += 0.2 * self._sensory_intensity.get("sugar", 0) * ramp
+                brain_freq += 0.2 * self._sensory_intensity.get("sugar", 0) * ramp
             if self._sensory_active.get("bitter"):
-                freq_mod -= 0.3 * self._sensory_intensity.get("bitter", 0) * ramp
+                brain_freq -= 0.3 * self._sensory_intensity.get("bitter", 0) * ramp
 
-            freq_mod = max(0.5, min(2.0, freq_mod))
+            brain_freq = max(0.5, min(2.0, brain_freq))
 
-            turn_bias = 0.15 * math.sin(2 * math.pi * 0.1 * t + 0.5) + random.gauss(0, 0.03)
+            brain_turn = 0.15 * math.sin(2 * math.pi * 0.1 * t + 0.5) + random.gauss(0, 0.03)
             if self._sensory_active.get("wind_gravity"):
-                turn_bias += 0.2 * self._sensory_intensity.get("wind_gravity", 0) * math.sin(t * 0.3)
-            turn_bias = max(-1.0, min(1.0, turn_bias))
+                brain_turn += 0.2 * self._sensory_intensity.get("wind_gravity", 0) * math.sin(t * 0.3)
+            brain_turn = max(-1.0, min(1.0, brain_turn))
+
+        # Apply motor override mode
+        if self._motor_mode == "manual":
+            freq_mod = self._manual_freq
+            turn_bias = self._manual_turn
+        elif self._motor_mode == "hybrid":
+            # Blend: 50% brain + 50% manual
+            freq_mod = 0.5 * brain_freq + 0.5 * self._manual_freq
+            turn_bias = 0.5 * brain_turn + 0.5 * self._manual_turn
+        else:
+            freq_mod = brain_freq
+            turn_bias = brain_turn
+
+        freq_mod = max(0.0, min(2.0, freq_mod))
+        turn_bias = max(-1.0, min(1.0, turn_bias))
 
         # Wall time
         cycle_wall_time = (SYNC_INTERVAL_MS / 1000.0) / 0.3 + random.gauss(0, 0.005)
@@ -326,6 +352,7 @@ class MockSimulation:
                 "freq_modulation": round(freq_mod, 4),
                 "turn_bias": round(turn_bias, 4),
             },
+            "motor_mode": self._motor_mode,
             "active_sensory": active_sensory,
             "sensory_channels": self.get_sensory_summary(),
             "spikes": spikes,

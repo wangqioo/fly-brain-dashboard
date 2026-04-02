@@ -9,6 +9,7 @@ import BodyStatePanel from './BodyStatePanel';
 import TrajectoryPanel from './TrajectoryPanel';
 import GaitDiagramPanel from './GaitDiagramPanel';
 import FlyArenaView from './FlyArenaView';
+import MotorControlPanel from './MotorControlPanel';
 import { useSimulation } from '../hooks/useSimulation';
 
 export default function Dashboard() {
@@ -45,6 +46,10 @@ export default function Dashboard() {
           />
           <SensoryControlPanel
             onStimulusChange={sim.setStimulus}
+            status={sim.status}
+          />
+          <MotorControlPanel
+            onMotorControl={sim.setMotorOverride}
             status={sim.status}
           />
           <MetricsPanel
