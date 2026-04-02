@@ -1,18 +1,24 @@
 """
 FastAPI server for the Fly Brain Dashboard.
-Provides REST endpoints and WebSocket streaming for simulation data.
+Provides REST endpoints, WebSocket streaming, and serves the built frontend.
 """
 
 import asyncio
 import json
 import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Dict
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from mock_simulation import MockSimulation, EXPERIMENTS, NUM_NEURONS, SENSORY_CHANNELS
+
+# Path to built frontend (vite build output)
+DIST_DIR = Path(__file__).parent.parent / "dist"
 
 active_connections: Dict[str, WebSocket] = {}
 simulation = MockSimulation()
@@ -164,6 +170,19 @@ async def _stream_data(websocket: WebSocket, speed: float = 1.0):
             break
 
         await asyncio.sleep(interval)
+
+
+# Serve built frontend static files (must be after API routes)
+if DIST_DIR.exists():
+    app.mount("/assets", StaticFiles(directory=str(DIST_DIR / "assets")), name="assets")
+
+    @app.get("/{full_path:path}")
+    async def serve_frontend(full_path: str):
+        """Serve the SPA - return index.html for all non-API routes."""
+        file_path = DIST_DIR / full_path
+        if file_path.exists() and file_path.is_file():
+            return FileResponse(str(file_path))
+        return FileResponse(str(DIST_DIR / "index.html"))
 
 
 if __name__ == "__main__":
