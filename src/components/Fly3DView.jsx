@@ -767,35 +767,12 @@ export default function Fly3DView({
       <div className="fly-3d-container" ref={containerRef} />
 
       <div className="fly-3d-controls">
-        <div className="fly-3d-mode-select">
-          <label>Control:</label>
-          {['brain', 'manual', 'hybrid'].map(mode => (
-            <button
-              key={mode}
-              className={`mode-btn ${motorMode === mode ? 'active' : ''}`}
-              onClick={() => {
-                setMotorMode(mode);
-                onMotorControl?.({ mode, freq: 1.0, turn: 0 });
-              }}
-            >
-              {mode === 'brain' ? 'Brain' : mode === 'manual' ? 'Manual' : 'Hybrid'}
-            </button>
-          ))}
-        </div>
-
-        {(motorMode === 'manual' || motorMode === 'hybrid') && (
-          <div className="fly-3d-joystick">
-            <Joystick onMove={handleJoystick} size={90} />
-            <div className="joystick-hint">WASD or drag</div>
-          </div>
-        )}
-
         <div className="fly-3d-camera-controls">
           <button
             className={`mode-btn ${cameraFollow ? 'active' : ''}`}
             onClick={() => setCameraFollow(!cameraFollow)}
           >
-            {cameraFollow ? 'Follow' : 'Free'}
+            {cameraFollow ? 'Follow' : 'Free Cam'}
           </button>
         </div>
 

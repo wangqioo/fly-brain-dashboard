@@ -9,6 +9,7 @@ import BodyStatePanel from './BodyStatePanel';
 import TrajectoryPanel from './TrajectoryPanel';
 import GaitDiagramPanel from './GaitDiagramPanel';
 import Fly3DView from './Fly3DView';
+import MotorControlPanel from './MotorControlPanel';
 import { useSimulation } from '../hooks/useSimulation';
 
 export default function Dashboard() {
@@ -47,6 +48,12 @@ export default function Dashboard() {
             onStimulusChange={sim.setStimulus}
             status={sim.status}
           />
+          {isEmbodied && (
+            <MotorControlPanel
+              onMotorControl={sim.setMotorOverride}
+              status={sim.status}
+            />
+          )}
           <MetricsPanel
             currentCycle={sim.currentCycle}
             cumulativeSpikes={sim.cumulativeSpikes}
